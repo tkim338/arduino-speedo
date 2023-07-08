@@ -15,21 +15,21 @@ void setup() {
 }
 
 void loop() {
-  int timeout = 100000;  // uS (0.1 sec)
+  unsigned long timeout = 100000;  // uS (0.1 sec)
 
   unsigned long start_time = micros();
-  int pulse_count = 0
+  int pulse_count = 0;
   while (micros() < start_time + timeout) {
     bool pulse_counted = false;
     while (digitalRead(hall_sensor_pin) == HIGH) {
-      if (pulse_counted == False) {
-        pulse_counted = True;
+      if (pulse_counted == false) {
+        pulse_counted = true;
         pulse_count += 1;
       }
     }
   }
 
-  unsigned long rpm = pulse_count / timeout / 1000000;
+  unsigned long rps = pulse_count / timeout / 1000000;
   unsigned long rpm = rps * 60;
   pulse_count = 0;
 
