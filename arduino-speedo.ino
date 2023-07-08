@@ -4,7 +4,7 @@ int hall_sensor_pin = 2;
 int servo_output_pin = 3;
 
 // calibration values
-int max_rpm = 7500;  // rpm of driveshaft at max measured speed
+int max_rpm = 5850;  // rpm of driveshaft at max measured speed
 
 Servo speedo_servo;
 
