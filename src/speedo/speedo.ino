@@ -3,10 +3,12 @@
 int hall_sensor_pin = 2;
 int servo_output_pin = 3;
 
-unsigned long prev_pulse_end = 0.0;
+unsigned long prev_pulse_end;
+unsigned long pulse_on_ratio;
+unsigned long rpm;
 
 // calibration values
-int max_rpm = 5850;  // rpm of driveshaft that correlates to maximum speed on gauge
+int max_rpm = 7800;  // rpm of driveshaft that correlates to maximum speed on gauge (100 mph)
 
 Servo speedo_servo;
 
@@ -22,11 +24,14 @@ void loop() {
   unsigned long rotation_period = micros() - prev_pulse_end; // uS
   prev_pulse_end = micros();
 
-  unsigned long rps = 1.0 / (rotation_period / 1000000.0);
-  unsigned long rpm = rps * 60;
   if (pulse_duration == 0) {
     rpm = 0;
   }
+  else {
+    pulse_on_ratio = pulse_duration / rotation_period;
+    rpm = pulse_on_ratio / (pulse_duration / 1000000.0) * 60;
+  }
+  
   int angle = map(rpm, 0, max_rpm, 0, 179);
   Serial.print(rpm);
   Serial.print(", ");
