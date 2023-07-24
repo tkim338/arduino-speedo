@@ -4,11 +4,11 @@ int hall_sensor_pin = 2;
 int servo_output_pin = 3;
 
 unsigned long prev_pulse_end;
-float pulse_on_ratio;
 float rpm;
 
 // calibration values
-int max_rpm = 7800;  // rpm of driveshaft that correlates to maximum speed on gauge (100 mph)
+float max_rpm = 7800;  // rpm of driveshaft that correlates to maximum speed on gauge (100 mph)
+float pulse_on_ratio = 0.1;  // calibrate this value
 
 Servo speedo_servo;
 
@@ -19,7 +19,7 @@ void setup() {
 }
 
 void loop() {
-  unsigned long timeout = 200000;  // uS (0.2 sec); min 12 RPM measurement
+  unsigned long timeout = 1000000;  // uS (1 sec)
   unsigned long pulse_duration = pulseIn(hall_sensor_pin, HIGH, timeout);
   unsigned long rotation_period = micros() - prev_pulse_end; // uS
   prev_pulse_end = micros();
