@@ -10,10 +10,15 @@ int pulse_count;
 unsigned long prev_time;
 unsigned long pulse_duration;
 
-unsigned long timeout = 500000;  // uS (0.5 sec)
+unsigned long timeout = 200000;  // uS (0.5 sec)
 
 // calibration values
-float max_rpm = 7800;  // rpm of driveshaft that correlates to maximum speed on gauge (100 mph)
+float diff_ratio = 3.909;
+float wheel_diameter = 24.7;  // inches
+float speedo_max = 100.0;  // mph
+float mile_to_inch = 6336.0;  // inch/mile
+float hr_to_min = 60.0;  // min/hr
+float max_rpm = (speedo_max * mile_to_inch / hr_to_min) / (wheel_diameter * PI) * diff_ratio;  // rpm of driveshaft that correlates to maximum speed on gauge (100 mph)
 
 Servo speedo_servo;
 
@@ -33,7 +38,7 @@ void loop() {
   prev_time = micros();
 
   pulse_count = (prev_pulse_count + pulse_count) / 2; // truncated to int; round down
-  rpm = pulse_count / (timeout / 1000000.0);
+  rpm = 60.0 * pulse_count / (timeout / 1000000.0);  // [sec/min * unitless / (u_sec / (sec / u_sec))]
   prev_pulse_count = pulse_count;
   
   int angle = map(rpm, 0, max_rpm, 0, 179);
@@ -42,4 +47,6 @@ void loop() {
   Serial.print(", angle: ");
   Serial.println(angle);
   speedo_servo.write(angle);
+
+  pulse_count = 0;
 }
