@@ -7,7 +7,7 @@ unsigned long t0;
 unsigned long pulse_duration;
 unsigned long running_average_duration;
 unsigned long total_duration;
-float pulse_percent;
+float pulse_ratio;
 
 unsigned long timeout = 1000000;  // uS
 
@@ -27,12 +27,12 @@ void loop() {
   }
   total_duration = micros() - t0;
 
-  pulse_percent = running_average_duration / total_duration;
+  pulse_ratio = running_average_duration / total_duration;
   
-  int angle = map(pulse_percent, 0, 1, 0, 179);
-  Serial.print("pulse_percent: ");
-  Serial.print(int(pulse_percent * 100));
-  Serial.print("%, angle: ");
+  int angle = map(pulse_ratio, 0, 1, 0, 179);
+  Serial.print("pulse_ratio: ");
+  Serial.print(pulse_ratio);
+  Serial.print(", angle: ");
   Serial.println(angle);
 
   speedo_servo.write(angle);
