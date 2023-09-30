@@ -3,16 +3,12 @@
 int hall_sensor_pin = 2;
 int servo_output_pin = 3;
 
-unsigned long prev_pulse_end;
 float rpm;
-int prev_pulse_count;
-int pulse_count;
-unsigned long prev_time;
 unsigned long pulse_duration;
-
-unsigned long timeout = 200000;  // uS (0.5 sec)
+unsigned long timeout = 200000;  // uS
 
 // calibration values
+unsigned long pulse_on_ratio = 0.1;
 float diff_ratio = 3.909;
 float wheel_diameter = 24.7;  // inches
 float speedo_max = 100.0;  // mph
@@ -29,18 +25,9 @@ void setup() {
 }
 
 void loop() {
-  while (micros() < prev_time + timeout) {
-    pulse_duration = pulseIn(hall_sensor_pin, HIGH, timeout);
-    if (pulse_duration > 0) {
-      pulse_count += 1;
-    }
-  }
-  prev_time = micros();
-
-  pulse_count = (prev_pulse_count + pulse_count) / 2; // truncated to int; round down
-  
-  if (prev_pulse_count > 0 && pulse_count > 0) {
-    rpm = 60.0 * pulse_count / (timeout / 1000000.0);  // [sec/min * unitless / (u_sec / (sec / u_sec))]
+  pulse_duration = pulseIn(hall_sensor_pin, HIGH, timeout);
+  if (pulse_duration > 0) {
+    rpm = 60.0 / (pulse_duration / pulse_on_ratio);
   }
   else {
     rpm = 0;
@@ -53,7 +40,4 @@ void loop() {
   Serial.println(angle);
 
   speedo_servo.write(angle);
-
-  prev_pulse_count = pulse_count;
-  pulse_count = 0;
 }
