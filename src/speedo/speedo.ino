@@ -10,7 +10,7 @@ int pulse_count;
 unsigned long prev_time;
 unsigned long pulse_duration;
 
-unsigned long timeout = 200000;  // uS (0.5 sec)
+unsigned long timeout = 500000;  // uS (0.5 sec)
 
 // calibration values
 float diff_ratio = 3.909;
